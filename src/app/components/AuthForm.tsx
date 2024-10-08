@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { AuthFormValues, AuthProps } from '@/lib/utils';
 import CustomField from '../components/CustomField';
 import Link from 'next/link';
+import { signup } from '@/userFns'
 
 const AuthForm = ( { type }: AuthProps ) => {
 
@@ -29,7 +30,7 @@ const AuthForm = ( { type }: AuthProps ) => {
     const onSignUp = (data: AuthFormValues) => {
         setIsLoading(true);
 
-        console.log('sign up', data);
+        signup(data.email, data.password);
 
         setIsLoading(false);
     }
