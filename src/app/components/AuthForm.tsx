@@ -6,6 +6,7 @@ import { AuthFormValues, AuthProps } from '@/lib/utils';
 import CustomField from '../components/CustomField';
 import Link from 'next/link';
 import { signup } from '@/userFns'
+import { login } from '../(auth)/sign-in/actions';
 
 const AuthForm = ( { type }: AuthProps ) => {
 
@@ -35,10 +36,24 @@ const AuthForm = ( { type }: AuthProps ) => {
         setIsLoading(false);
     }
 
-    const onSignIn = (data: AuthFormValues) => {
+    const onSignIn = async (data: AuthFormValues) => {
         setIsLoading(true);
 
-        console.log('sign in', data);
+        console.log(data);
+
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+            console.log("ERROR!");
+        }
+
+
 
         setIsLoading(false);
     }
