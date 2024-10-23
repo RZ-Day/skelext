@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { AuthFormValues, AuthProps } from '@/lib/utils';
 import CustomField from '../components/CustomField';
 import Link from 'next/link';
-import { signup } from '@/userFns'
-import { login } from '../(auth)/sign-in/actions';
+//import { signup } from '../userFns'
+//import { login } from '../(auth)/sign-in/actions';
 
 const AuthForm = ( { type }: AuthProps ) => {
 
@@ -31,7 +31,7 @@ const AuthForm = ( { type }: AuthProps ) => {
     const onSignUp = (data: AuthFormValues) => {
         setIsLoading(true);
 
-        signup(data.email, data.password);
+        //signup(data.email, data.password);
 
         setIsLoading(false);
     }
@@ -41,6 +41,7 @@ const AuthForm = ( { type }: AuthProps ) => {
 
         console.log(data);
 
+        //Login request sent to the next API, which handles login logic
         const res = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {

@@ -1,27 +1,25 @@
 import { NextResponse } from 'next/server';
-import { login } from '@/app/(auth)/sign-in/actions';
 import { createClient } from '../../../../../utils/supabase/server';
 
 export async function POST(req: Request) {
-    const data = await req.json();
+    const reqData = await req.json();
     const supabase = createClient();
 
     // type-casting here for convenience
     // in practice, you should validate your inputs
 
-
     const loginData = {
-        email: data.email,
-        password: data.password
+        email: reqData.email,
+        password: reqData.password
     }
 
-    const { error } = await supabase.auth.signInWithPassword(loginData);
+    const { data, error } = await supabase.auth.signInWithPassword(loginData);
 
     if (error) {
         console.log("ERROR: supabase auth failed ", error);
         return new NextResponse("LOGIN FAILED", { status: 401 });
     }
 
-    return new NextResponse("SUCCESS");
+    return NextResponse.redirect(new URL("/dashboard", req.url));
 
 }
