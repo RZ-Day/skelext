@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '../../../../../utils/supabase/server';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     const reqData = await req.json();
     const supabase = createClient();
 
@@ -13,13 +13,31 @@ export async function POST(req: Request) {
         password: reqData.password
     }
 
+    console.log(loginData);
+
     const { data, error } = await supabase.auth.signInWithPassword(loginData);
 
     if (error) {
-        console.log("ERROR: supabase auth failed ", error);
-        return new NextResponse("LOGIN FAILED", { status: 401 });
+        return NextResponse.json(
+            {message: "Login failed: ", error: error.message},
+            {status: 500}
+        );
     }
 
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    const { user } = data;
+    console.log(user);
+
+    // const url = request.nextUrl.clone()
+    // url.pathname = '/sign-in'
+    // return NextResponse.redirect(url)
+
+    const url = req.nextUrl.clone();
+    url.pathname = '/dashboard';
+    return NextResponse.redirect(url);
+
+    // return NextResponse.json(
+    //     {message: "Login Successful"},
+    //     {status: 200}
+    // );
 
 }

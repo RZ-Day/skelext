@@ -5,10 +5,12 @@ import { useForm } from 'react-hook-form';
 import { AuthFormValues, AuthProps } from '@/lib/utils';
 import CustomField from '../components/CustomField';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 //import { signup } from '../userFns'
 //import { login } from '../(auth)/sign-in/actions';
 
 const AuthForm = ( { type }: AuthProps ) => {
+    const router = useRouter();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -22,7 +24,7 @@ const AuthForm = ( { type }: AuthProps ) => {
         mode: "onSubmit"
     });
 
-    const { register, handleSubmit, formState, getValues } = form;
+    const { register, handleSubmit, formState, getValues, reset } = form;
     const { errors, isSubmitting } = formState;
 
     // splitting submission logic depending on form type
@@ -39,8 +41,6 @@ const AuthForm = ( { type }: AuthProps ) => {
     const onSignIn = async (data: AuthFormValues) => {
         setIsLoading(true);
 
-        console.log(data);
-
         //Login request sent to the next API, which handles login logic
         const res = await fetch('/api/auth/login', {
             method: 'POST',
@@ -51,10 +51,15 @@ const AuthForm = ( { type }: AuthProps ) => {
         });
 
         if (!res.ok) {
-            console.log("ERROR!");
+            console.log("unable to login! status: ", res.status);
+            reset({
+                password: ""
+            });
         }
 
-
+        if (res.redirected) {
+            router.push(res.url);
+        }
 
         setIsLoading(false);
     }
