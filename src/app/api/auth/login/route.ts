@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     if (error) {
         return NextResponse.json(
             {message: "Login failed: ", error: error.message},
-            {status: 500}
+            {status: error.status}
         );
     }
 

@@ -6,11 +6,13 @@ import { AuthFormValues, AuthProps } from '@/lib/utils';
 import CustomField from '../components/CustomField';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { usePopUp } from './contexts/PopUpContext';
 //import { signup } from '../userFns'
 //import { login } from '../(auth)/sign-in/actions';
 
 const AuthForm = ( { type }: AuthProps ) => {
     const router = useRouter();
+    const { pushPopUp } = usePopUp();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -24,7 +26,7 @@ const AuthForm = ( { type }: AuthProps ) => {
         mode: "onSubmit"
     });
 
-    const { register, handleSubmit, formState, getValues, reset } = form;
+    const { register, handleSubmit, formState, getValues, reset, setError } = form;
     const { errors, isSubmitting } = formState;
 
     // splitting submission logic depending on form type
@@ -41,31 +43,43 @@ const AuthForm = ( { type }: AuthProps ) => {
     const onSignIn = async (data: AuthFormValues) => {
         setIsLoading(true);
 
-        //Login request sent to the next API, which handles login logic
-        const res = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!res.ok) {
-            console.log("unable to login! status: ", res.status);
-            reset({
-                password: ""
+        try {
+            //Login request sent to the next API, which handles login logic
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
             });
-        }
 
-        if (res.redirected) {
-            router.push(res.url);
-        }
+            if (!res.ok) {
+                console.error("Failed to log in", res.statusText);
 
-        setIsLoading(false);
+                //reset password field on failed login attempt
+                reset({
+                    password: ""
+                });
+            }
+
+            if (res.status === 400) {
+                pushPopUp("Bad email or password", "red-500");
+            }
+
+            if (res.redirected) {
+                router.push(res.url);
+            }
+
+        } catch (error) {
+            console.error("Unknown error occurred during login: ", error);
+            
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
-        <section className="flex flex-col items-center">
+        <section className="flex flex-col items-center z-5">
 
             <h2>
                 {type === "sign-in" 

@@ -1,11 +1,21 @@
 // import { supabase } from './client';
 
+import { AuthFormValues } from "./lib/utils"
+
 // export async function login(email, password) {
 //     let returnObj = {
 //         isSuccessful: true,
 //         message: '',
 //         user: null
 //     }
+
+export const signIn = async (data: AuthFormValues) => {
+
+}
+
+export const signUp = async () => {
+    
+}
 
 //     try {
 //         const { data, error } = await supabase.auth.signInWithPassword({
