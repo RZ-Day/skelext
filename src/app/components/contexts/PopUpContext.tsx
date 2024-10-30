@@ -12,7 +12,7 @@ export const usePopUp = () => useContext(PopUpContext);
 const PopUp = ({ message, color }: { message: string, color: string }) => {
 
     return (
-        <div className={`fixed z-10 flex justify-center p-5 rounded bg-${color} min-w-80`}>
+        <div className={`fixed flex justify-center p-5 rounded ${color} min-w-80`}>
             <p className={`text-white text-bold`}>
                 {message}
             </p>
@@ -40,7 +40,7 @@ export const PopUpProvider = ({children}: Readonly<{ children: React.ReactNode }
         <PopUpContext.Provider value={{ pushPopUp }}>
         
             {children}
-            <div className={`${classes.fadeIn} ${popUp.isVisible ? classes.visible : ''} absolute -z-10 pt-5 flex justify-center top-0 left-0 w-screen h-screen`}>
+            <div className={`${classes.fadeIn} ${popUp.isVisible ? classes.visible : ''} absolute pointer-events-none z-100 pt-5 flex justify-center top-0 left-0 w-screen h-screen`}>
                 <PopUp message={popUp.message} color={popUp.color} />
             </div>
         

@@ -8,7 +8,7 @@ const Home = () => {
   const { pushPopUp } = usePopUp();
 
   const popUpHandler = () => {
-    pushPopUp("Login successful", "green-400");
+    pushPopUp("Login successful", "bg-green-400");
   }
 
   const logoutHandler =  async() => {

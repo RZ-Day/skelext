@@ -63,10 +63,12 @@ const AuthForm = ( { type }: AuthProps ) => {
             }
 
             if (res.status === 400) {
-                pushPopUp("Bad email or password", "red-500");
+                //TODO: FIGURE OUT WHY ONLY RED-500 WORKS... THEY SHOULD ALL WORK???
+                pushPopUp("Bad email or password", "bg-red-400");
             }
 
             if (res.redirected) {
+                pushPopUp("Login successful", "bg-green-400");
                 router.push(res.url);
             }
 
@@ -81,14 +83,14 @@ const AuthForm = ( { type }: AuthProps ) => {
     return (
         <section className="flex flex-col items-center z-5">
 
-            <h2>
+            <h2 className="text-3xl mb-5 text-blue-500">
                 {type === "sign-in" 
                     ? "Sign In"
                     : "Sign Up" 
                 }
             </h2>
 
-            <form className="flex flex-col" onSubmit={handleSubmit((type === 'sign-up' ? onSignUp : onSignIn))} noValidate>
+            <form className="flex border p-5 rounded flex-col space-y-3" onSubmit={handleSubmit((type === 'sign-up' ? onSignUp : onSignIn))} noValidate>
 
                 {/* Sign In fields */}
 
@@ -100,13 +102,13 @@ const AuthForm = ( { type }: AuthProps ) => {
                         message: 'Invalid email address' // Error message for invalid email
                     },
                 }}/>
-                <p>{errors.email?.message}</p>
+                <p className="text-sm text-red-500">{errors.email?.message}</p>
 
                 <CustomField name="password" label="Password" type="password" placeholder="Enter your password" register={register} validation={{
                     required: "You must enter a password",
                     max: 30
                 }}/>
-                <p>{errors.password?.message}</p>
+                <p className="text-sm text-red-500">{errors.password?.message}</p>
 
                 {/* (extra) Sign Up fields */}
 
@@ -121,12 +123,15 @@ const AuthForm = ( { type }: AuthProps ) => {
                                 }
                             }
                         }}/>
-                        <p>{errors.confirmPassword?.message}</p>
+                        <p className="text-sm text-red-500">{errors.confirmPassword?.message}</p>
                     </>
                 }
 
-                <button type="submit" className="p-3 w-full bg-slate-200" disabled={isLoading}>
-                    Submit
+                <button type="submit" className="p-3 rounded w-full bg-slate-200" disabled={isLoading}>
+                    {isLoading ?
+                        <p className="animate-spin text-lg">+</p> :
+                        <p>Submit</p>
+                    }
                 </button>
 
             </form>
@@ -144,10 +149,12 @@ const AuthForm = ( { type }: AuthProps ) => {
                 &nbsp;
 
                 <Link href={type === "sign-up" ? "/sign-in" : "/sign-up"}>
-                    {type === "sign-up"
-                        ? "Sign in"
-                        : "Sign up"
-                    }
+                    <p className="text-blue-400">
+                        {type === "sign-up"
+                            ? "Sign in"
+                            : "Sign up"
+                        }
+                    </p>
                 </Link>
             </div>
         </section>
